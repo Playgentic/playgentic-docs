@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Architecture: repo setup — playgentic docs</title>
-    <meta name="description" content="What a scaffolded playgentic suite ships in the repo and how it fits together: husky hooks, lint-staged, eslint + prettier, the playwright-test MCP, and the lint and Playwright CI workflows." />
+    <meta name="description" content="What a scaffolded playgentic suite ships in the repo and how it fits together: husky hooks, lint-staged, eslint + prettier, the Playwright MCP, and the lint and Playwright CI workflows." />
     <meta name="theme-color" content="#eef6f0" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0a0d0b" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="../assets/icon.png" />
@@ -116,9 +116,9 @@
           <li><b>TypeScript</b> — <code>npm run typecheck</code> (<code>tsc --noEmit</code>); also runs in pre-commit.</li>
         </ul>
 
-        <h2 id="mcp">The playwright-test MCP</h2>
-        <p>The agents plugin bundles the <code>playwright-test</code> MCP server (via
-          <code>npx playwright run-test-mcp-server</code>, using this suite's own Playwright). It's the only thing that drives a
+        <h2 id="mcp">The Playwright MCP</h2>
+        <p>The agents plugin bundles the generic <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener">Playwright MCP</a> server (via
+          <code>npx @playwright/mcp@latest</code>). It's the only thing that drives a
           real browser, and only the explorer and builder agents use it. The suite itself (scaffolding, linting, tests) doesn't need it.</p>
         <p class="link-out">↗ <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">Model Context Protocol</a></p>
 
