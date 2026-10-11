@@ -2,7 +2,7 @@
 
 Website for [playgentic](https://github.com/playgentic/playgentic) (the Playwright-BDD suite scaffold) and [playgentic-agents](https://github.com/playgentic/playgentic-agents) (the agent plugin for Claude Code, GitHub Copilot and Codex).
 
-It's a static site with no build step. It will be deployed to Vercel as the playgentic product site; until then, preview it locally.
+It's a static site with no build step. It deploys to GitHub Pages at https://playgentic.github.io/playgentic-docs/ on every push to `main` (`.github/workflows/pages.yml`).
 
 | Path | What |
 | --- | --- |
