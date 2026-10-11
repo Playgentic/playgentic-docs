@@ -53,3 +53,30 @@ if (sidebarToggle && sidebar) {
     sidebarToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 }
+
+/* ---------- Light/dark toggle ----------
+   The inline <head> snippet applies a saved choice before first paint; with no
+   saved choice the CSS follows prefers-color-scheme. */
+const themeToggle = document.querySelector('.theme-toggle');
+if (themeToggle) {
+  const dark = () =>
+    document.documentElement.dataset.theme
+      ? document.documentElement.dataset.theme === 'dark'
+      : matchMedia('(prefers-color-scheme: dark)').matches;
+  const sync = () => {
+    const label = dark() ? 'Switch to light mode' : 'Switch to dark mode';
+    themeToggle.setAttribute('aria-label', label);
+    themeToggle.title = label;
+  };
+  sync();
+  themeToggle.addEventListener('click', () => {
+    const next = dark() ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem('playgentic-theme', next);
+    } catch {
+      // storage unavailable (private mode): the choice lasts for this page only
+    }
+    sync();
+  });
+}

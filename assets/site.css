@@ -1,33 +1,36 @@
 /* playgentic — shared design system (pass/fail terminal theme).
    Used by the landing page, the playground, and the wiki docs. Hand-written,
-   zero-build, theme-aware (light/dark via prefers-color-scheme). */
+   zero-build, theme-aware: follows prefers-color-scheme unless the toggle sets
+   <html data-theme="light|dark"> (see site.js). */
 
 :root {
+  color-scheme: light;
   --pass: #22c55e;
   --pass-deep: #15803d;
   --pass-ink: #15803d;
   --fail: #ef4444;
   --fail-deep: #b91c1c;
 
-  --bg: #f6f8f6;
-  --bg-elev: #ffffff;
+  --bg: #eef6f0;
+  --bg-elev: #e3f0e6;
   --surface: #ffffff;
-  --border: #e2e8e2;
-  --text: #101613;
-  --text-muted: #56655c;
+  --border: #cfe3d4;
+  --text: #0c1f13;
+  --text-muted: #4a6553;
   --code-bg: #0b0f0c;
   --code-text: #d7f5e0;
   --shadow: 0 1px 2px rgba(12, 30, 18, 0.04), 0 8px 24px rgba(12, 30, 18, 0.06);
   --radius: 14px;
 
   /* diagram */
-  --arch-stroke: #cfe0d3;
-  --arch-edge: #a9c2ae;
-  --arch-elabel: #5c7062;
+  --arch-stroke: #b9d8c1;
+  --arch-edge: #8fb89a;
+  --arch-elabel: #4f6b58;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --bg: #0a0d0b;
     --bg-elev: #0f1512;
     --surface: #121a15;
@@ -42,6 +45,22 @@
     --arch-edge: #3a5044;
     --arch-elabel: #8ca596;
   }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0d0b;
+  --bg-elev: #0f1512;
+  --surface: #121a15;
+  --border: #22302a;
+  --text: #e8f2ea;
+  --text-muted: #91a698;
+  --code-bg: #070a08;
+  --code-text: #d7f5e0;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.4);
+
+  --arch-stroke: #2b3d33;
+  --arch-edge: #3a5044;
+  --arch-elabel: #8ca596;
 }
 
 * {
@@ -77,9 +96,12 @@ a:hover {
   text-decoration: underline;
 }
 @media (prefers-color-scheme: dark) {
-  a {
+  :where(:root:not([data-theme="light"])) a {
     color: var(--pass);
   }
+}
+:where(:root[data-theme="dark"]) a {
+  color: var(--pass);
 }
 
 code,
@@ -161,6 +183,45 @@ header.nav {
 .nav-icons svg {
   display: block;
   width: auto;
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.theme-toggle:hover {
+  color: var(--pass-ink);
+  border-color: var(--pass);
+}
+.theme-toggle svg {
+  width: 17px;
+  height: 17px;
+}
+/* show the moon in light mode, the sun in dark mode */
+.theme-toggle .ico-sun {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :where(:root:not([data-theme="light"])) .theme-toggle .ico-sun {
+    display: block;
+  }
+  :where(:root:not([data-theme="light"])) .theme-toggle .ico-moon {
+    display: none;
+  }
+}
+:where(:root[data-theme="dark"]) .theme-toggle .ico-sun {
+  display: block;
+}
+:where(:root[data-theme="dark"]) .theme-toggle .ico-moon {
+  display: none;
 }
 .ico-gh {
   height: 20px;
@@ -338,9 +399,12 @@ section.alt {
   margin-bottom: 8px;
 }
 @media (prefers-color-scheme: dark) {
-  .kicker {
+  :where(:root:not([data-theme="light"])) .kicker {
     color: var(--pass);
   }
+}
+:where(:root[data-theme="dark"]) .kicker {
+  color: var(--pass);
 }
 .sec-head h2 {
   font-size: clamp(1.5rem, 3.5vw, 2rem);
@@ -391,18 +455,24 @@ section.alt {
   color: var(--pass-ink);
 }
 @media (prefers-color-scheme: dark) {
-  .card .ic {
+  :where(:root:not([data-theme="light"])) .card .ic {
     color: var(--pass);
   }
+}
+:where(:root[data-theme="dark"]) .card .ic {
+  color: var(--pass);
 }
 .card .ic.fail {
   background: color-mix(in srgb, var(--fail) 14%, transparent);
   color: var(--fail-deep);
 }
 @media (prefers-color-scheme: dark) {
-  .card .ic.fail {
+  :where(:root:not([data-theme="light"])) .card .ic.fail {
     color: #fca5a5;
   }
+}
+:where(:root[data-theme="dark"]) .card .ic.fail {
+  color: #fca5a5;
 }
 .card .ic svg {
   width: 19px;
@@ -629,12 +699,18 @@ section.alt {
   border: 1px solid color-mix(in srgb, var(--fail) 40%, transparent);
 }
 @media (prefers-color-scheme: dark) {
-  .status.ok {
+  :where(:root:not([data-theme="light"])) .status.ok {
     color: #86efac;
   }
-  .status.err {
+  :where(:root:not([data-theme="light"])) .status.err {
     color: #fca5a5;
   }
+}
+:where(:root[data-theme="dark"]) .status.ok {
+  color: #86efac;
+}
+:where(:root[data-theme="dark"]) .status.err {
+  color: #fca5a5;
 }
 .hint {
   font-size: 0.78rem;
@@ -718,9 +794,12 @@ ul.tasks li input[type='checkbox'] {
   color: var(--pass-deep);
 }
 @media (prefers-color-scheme: dark) {
-  .chip.active {
+  :where(:root:not([data-theme="light"])) .chip.active {
     color: #86efac;
   }
+}
+:where(:root[data-theme="dark"]) .chip.active {
+  color: #86efac;
 }
 .task-count {
   margin-left: auto;
@@ -791,12 +870,18 @@ table.results th .caret {
   background: color-mix(in srgb, var(--fail) 13%, transparent);
 }
 @media (prefers-color-scheme: dark) {
-  .badge.pass {
+  :where(:root:not([data-theme="light"])) .badge.pass {
     color: #86efac;
   }
-  .badge.fail {
+  :where(:root:not([data-theme="light"])) .badge.fail {
     color: #fca5a5;
   }
+}
+:where(:root[data-theme="dark"]) .badge.pass {
+  color: #86efac;
+}
+:where(:root[data-theme="dark"]) .badge.fail {
+  color: #fca5a5;
 }
 
 /* ---------- Numbered install steps ---------- */
@@ -1088,9 +1173,12 @@ footer {
   font-weight: 600;
 }
 @media (prefers-color-scheme: dark) {
-  .doc-nav-group a.active {
+  :where(:root:not([data-theme="light"])) .doc-nav-group a.active {
     color: #86efac;
   }
+}
+:where(:root[data-theme="dark"]) .doc-nav-group a.active {
+  color: #86efac;
 }
 
 .doc-content {
