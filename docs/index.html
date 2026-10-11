@@ -137,6 +137,14 @@ TARGET_URL = https://your-app.example.com
           <pre class="cmd"><span class="c">$</span> npx playgentic agents claude,copilot,codex   <span class="c"># any subset, or "all"</span></pre>
           <button class="copy-btn" data-copy="npx playgentic agents claude,copilot,codex" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg><span class="copy-label">Copy</span></button>
         </div>
+        <p>That registers and enables the plugin, but each person still installs it once. In Claude Code, trust the
+          folder and accept the plugin install prompt, or run:</p>
+        <div class="cmd-block">
+          <pre class="cmd"><span class="c">$</span> claude plugin install playgentic@playgentic --scope project</pre>
+          <button class="copy-btn" data-copy="claude plugin install playgentic@playgentic --scope project" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg><span class="copy-label">Copy</span></button>
+        </div>
+        <p>Restart Claude Code afterwards. Copilot and Codex have their own one-time step, printed by the command and
+          listed in <a href="agent-pipeline.html#wiring">Architecture → Agent harness</a>.</p>
         <p>Then run the <code>author-tests</code> skill. It cuts a feature branch, agrees acceptance criteria with you,
           explores the live app, builds and runs tests in this suite's conventions, has an auditor review them, and commits only test files.</p>
         <pre class="code"><span class="cm"># Claude Code</span>

@@ -86,11 +86,11 @@
         </div>
         <ul>
           <li><b>All harnesses:</b> <code>.playgentic/config.json</code> sets the base branch, branch prefix, worktree policy and run command. An <code>AGENTS.md</code> block describes this suite's conventions (docstrings, step wiki, <code>world</code> fixture) so the agents follow them.</li>
-          <li><b>Claude Code:</b> <code>.claude/settings.json</code> registers the marketplace and enables <code>playgentic@playgentic</code>. <code>CLAUDE.md</code> imports <code>AGENTS.md</code>.</li>
-          <li><b>GitHub Copilot:</b> the same keys in <code>.github/copilot/settings.json</code>.</li>
+          <li><b>Claude Code:</b> <code>.claude/settings.json</code> registers the marketplace and enables <code>playgentic@playgentic</code>. <code>CLAUDE.md</code> imports <code>AGENTS.md</code>. Each user installs the plugin once: accept the install prompt when trusting the folder, or run <code>claude plugin install playgentic@playgentic --scope project</code>.</li>
+          <li><b>GitHub Copilot:</b> the same keys in <code>.github/copilot/settings.json</code>. Each user runs <code>copilot plugin marketplace add playgentic/playgentic-agents</code> and <code>copilot plugin install playgentic@playgentic</code> once.</li>
           <li><b>Codex:</b> <code>.codex/config.toml</code> registers the marketplace and enables the plugin for trusted projects. Each user runs <code>codex plugin add playgentic@playgentic</code> once.</li>
         </ul>
-        <p>Every write is a merge, so re-running is a no-op. Pin a release with <code>--agents-ref &lt;tag&gt;</code>.</p>
+        <p>The command prints the one-time install step for each harness you picked. Every write is a merge, so re-running is a no-op. Pin a release with <code>--agents-ref &lt;tag&gt;</code>.</p>
 
         <h2 id="pipeline">The pipeline</h2>
         <p>Invoke the <code>author-tests</code> skill (<code>/playgentic:author-tests</code> in Claude Code) with <code>--gen</code> or <code>--heal</code>. It runs these steps:</p>
