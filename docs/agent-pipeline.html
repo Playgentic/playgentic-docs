@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Architecture: the agent pipeline — playgentic docs</title>
+    <meta name="description" content="How playgentic wires the agents plugin into Claude Code, GitHub Copilot and Codex with --agents, and what the author-tests pipeline does." />
+    <meta name="theme-color" content="#15803d" />
+    <link rel="icon" href="../assets/icon.png" />
+    <link rel="stylesheet" href="../assets/site.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="brand" href="../" aria-label="playgentic home">
+          <img class="brand-mark" src="../assets/icon.png" alt="" />
+          <span>playgentic</span>
+        </a>
+        <nav class="nav-links" id="menu">
+          <a href="./" class="active">Docs</a>
+          <a href="../playground/">Playground</a>
+          <a href="agent-pipeline.html">Architecture</a>
+          <span class="nav-icons">
+            <a href="https://github.com/BlaiseMoses01/playgentic" aria-label="GitHub" target="_blank" rel="noopener">
+              <svg class="ico-gh" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.196.695-3.87-1.54-3.87-1.54-.523-1.33-1.278-1.683-1.278-1.683-1.045-.714.08-.7.08-.7 1.155.082 1.763 1.186 1.763 1.186 1.027 1.76 2.695 1.252 3.35.957.104-.744.402-1.252.732-1.54-2.552-.29-5.236-1.276-5.236-5.68 0-1.255.448-2.28 1.183-3.084-.119-.29-.513-1.46.112-3.043 0 0 .965-.31 3.163 1.178a11 11 0 0 1 5.762 0c2.196-1.488 3.16-1.178 3.16-1.178.626 1.583.232 2.753.114 3.043.737.804 1.18 1.83 1.18 3.084 0 4.415-2.688 5.386-5.25 5.67.413.357.78 1.06.78 2.137 0 1.543-.014 2.787-.014 3.166 0 .308.207.667.79.554A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z" /></svg>
+            </a>
+            <a href="https://www.npmjs.com/package/playgentic" aria-label="playgentic on npm" target="_blank" rel="noopener">
+              <svg class="ico-npm" viewBox="0 0 24 24" fill="#CB3837" aria-hidden="true"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.08 19.17H5.113z" /></svg>
+            </a>
+          </span>
+        </nav>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <button class="doc-sidebar-toggle" aria-expanded="false">☰ Docs menu</button>
+    </div>
+
+    <div class="doc-shell">
+      <aside class="doc-sidebar">
+        <div class="doc-nav-group">
+          <p class="label">playgentic</p>
+          <a href="../">Home</a>
+          <a href="../playground/">Playground</a>
+        </div>
+        <div class="doc-nav-group">
+          <p class="label">Guide</p>
+          <a href="./">Getting started</a>
+          <a href="template.html">Working off the template</a>
+        </div>
+        <div class="doc-nav-group">
+          <p class="label">Architecture</p>
+          <a href="agent-pipeline.html" class="active">Agent pipeline</a>
+          <a href="repo-setup.html">Repo setup</a>
+        </div>
+      </aside>
+
+      <main class="doc-content">
+        <div class="crumbs">Docs / Architecture / Agents</div>
+        <h1>Architecture: the agent harness</h1>
+        <p class="lede">
+          The scaffold itself is agent-agnostic. The agents live in their own plugin,
+          <a href="https://github.com/BlaiseMoses01/playgentic-agents">playgentic-agents</a>, which ships to
+          Claude Code, GitHub Copilot and Codex. <code>--agents</code> wires that plugin into your repo, the same way
+          Playwright's <code>init-agents</code> does.
+        </p>
+
+        <h2 id="wiring">What <code>--agents</code> writes</h2>
+        <div class="cmd-block">
+          <pre class="cmd"><span class="c">$</span> npx playgentic init my-suite --agents claude,copilot,codex
+<span class="c">$</span> npx playgentic agents claude          <span class="c"># add to an existing project</span></pre>
+        </div>
+        <ul>
+          <li><b>All harnesses:</b> <code>.playgentic/config.json</code> sets the base branch, branch prefix, worktree policy and run command. An <code>AGENTS.md</code> block describes this suite's conventions (docstrings, step wiki, <code>world</code> fixture) so the agents follow them.</li>
+          <li><b>Claude Code:</b> <code>.claude/settings.json</code> registers the marketplace and enables <code>playgentic@playgentic</code>. <code>CLAUDE.md</code> imports <code>AGENTS.md</code>.</li>
+          <li><b>GitHub Copilot:</b> the same keys in <code>.github/copilot/settings.json</code>.</li>
+          <li><b>Codex:</b> <code>.codex/config.toml</code> registers the marketplace and enables the plugin for trusted projects. Each user runs <code>codex plugin add playgentic@playgentic</code> once.</li>
+        </ul>
+        <p>Every write is a merge, so re-running is a no-op. Pin a release with <code>--agents-ref &lt;tag&gt;</code>.</p>
+
+        <h2 id="pipeline">The pipeline</h2>
+        <p>Invoke the <code>author-tests</code> skill (<code>/playgentic:author-tests</code> in Claude Code) with <code>--gen</code> or <code>--heal</code>. It runs these steps:</p>
+        <ol>
+          <li>Cut a feature branch (a worktree only if you confirm parallel work).</li>
+          <li>Learn the suite.</li>
+          <li>Agree numbered acceptance criteria with you.</li>
+          <li>Run a read-only <b>explorer</b> against the live app.</li>
+          <li>Have <b>builders</b> write and run tests in your conventions.</li>
+          <li>Have a read-only <b>auditor</b> check that each test genuinely verifies its criterion.</li>
+          <li>Commit only test files.</li>
+        </ol>
+
+        <h2 id="sync">Staying current</h2>
+        <p>Nothing is copied into your repo, so there's nothing to sync. The plugin updates through each harness's marketplace.
+          See the <a href="https://github.com/BlaiseMoses01/playgentic-agents">playgentic-agents README</a> for details.</p>
+      </main>
+    </div>
+
+    <footer>
+      <div class="wrap footer-inner">
+        <span class="footer-brand"><img src="../assets/icon.png" alt="" /><span>MIT · playgentic</span></span>
+        <span class="footer-links">
+          <a href="../">Home</a>
+          <a href="../playground/">Playground</a>
+          <a href="https://github.com/BlaiseMoses01/playgentic" target="_blank" rel="noopener" aria-label="GitHub"><svg class="ico-gh" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.196.695-3.87-1.54-3.87-1.54-.523-1.33-1.278-1.683-1.278-1.683-1.045-.714.08-.7.08-.7 1.155.082 1.763 1.186 1.763 1.186 1.027 1.76 2.695 1.252 3.35.957.104-.744.402-1.252.732-1.54-2.552-.29-5.236-1.276-5.236-5.68 0-1.255.448-2.28 1.183-3.084-.119-.29-.513-1.46.112-3.043 0 0 .965-.31 3.163 1.178a11 11 0 0 1 5.762 0c2.196-1.488 3.16-1.178 3.16-1.178.626 1.583.232 2.753.114 3.043.737.804 1.18 1.83 1.18 3.084 0 4.415-2.688 5.386-5.25 5.67.413.357.78 1.06.78 2.137 0 1.543-.014 2.787-.014 3.166 0 .308.207.667.79.554A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z" /></svg></a>
+          <a href="https://www.npmjs.com/package/playgentic" target="_blank" rel="noopener" aria-label="npm"><svg class="ico-npm" viewBox="0 0 24 24" fill="#CB3837" aria-hidden="true"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.08 19.17H5.113z" /></svg></a>
+        </span>
+      </div>
+    </footer>
+
+    <script src="../assets/site.js"></script>
+  </body>
+</html>
